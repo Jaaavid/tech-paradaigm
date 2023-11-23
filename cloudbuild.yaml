@@ -1,0 +1,32 @@
+steps:
+  - id: 'dependencies'
+    name: node:18
+    entrypoint: yarn
+    args: ['install']
+
+
+  # Build the container imag
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', '$_IMAGE_NAME', '.']
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '$_IMAGE_NAME']
+  # Deploy container image to Cloud Run
+  - id: 'Deploy to Cloud Run'
+    name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'frontend'
+      - '--image'
+      - '$_IMAGE_NAME'
+      - '--region'
+      - 'europe-west1'
+
+options:
+  dynamic_substitutions: true
+substitutions:
+  _TAG: v0.99
+  _IMAGE_NAME: gcr.io/clocking-403720/frontend:${_TAG}
+timeout: 2400s
