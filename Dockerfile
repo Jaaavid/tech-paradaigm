@@ -1,12 +1,31 @@
-FROM node:alpine
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-# Install app dependencies
-COPY package.json /usr/src/app/
-RUN npm install
-# Bundle app source
-COPY . /usr/src/app
+# Get NPM packages
+FROM node:14-alpine AS dependencies
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
+
+# Rebuild the source code only when needed
+FROM node:14-alpine AS builder
+WORKDIR /app
+COPY . .
+COPY --from=dependencies /app/node_modules ./node_modules
 RUN npm run build
-EXPOSE 8080
-CMD [ "npm", "start" ]
+
+# Production image, copy all the files and run next
+FROM node:14-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+USER nextjs
+EXPOSE 3000
+
+CMD ["npm", "start"]
