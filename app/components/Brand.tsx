@@ -19,11 +19,11 @@ const HotelCard = ({ item }: any) => {
         />
       </div>
 
-      <div className="lg:max-w-screen-sm p-4">
+      <div className="lg:max-w-screen-sm lg:w-1/2 p-4">
         <h1 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
           {title}
         </h1>
-        <p className="lg:truncate ...">{text}</p>
+        <p className=" lg:truncate ...">{text}</p>
       </div>
       <div className="flex flex-col gap-4 items-center justify-center">
         <Button url={link} />
