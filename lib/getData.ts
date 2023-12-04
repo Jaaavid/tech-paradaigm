@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 
-const useFetch = async (gclid: any) => {
+const useFetch = async (gclid) => {
   // Fetch the IP address from the headers
   const ip = headers().get("x-forwarded-for") || "No IP Found";
 
@@ -9,7 +9,7 @@ const useFetch = async (gclid: any) => {
   console.log("GCLID:", gclid);
 
   // Define the URL you are sending the request to
-  const url = `https://api.gameindustrytitans.com/logic`;
+  const url = `YOUR_BACKEND_URL`;
 
   try {
     // Make the POST request to the server
@@ -17,10 +17,8 @@ const useFetch = async (gclid: any) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Optionally include this if your server checks for this header
-        "X-Forwarded-For": ip,
       },
-      body: JSON.stringify({ ip: ip, gclid: gclid }),
+      body: JSON.stringify({ address: ip, gclid: gclid }),
     });
 
     // Parse the JSON response
