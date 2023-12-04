@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 
-const useFetch = async (gclid) => {
+const useFetch = async (gclid: any) => {
   // Fetch the IP address from the headers
   const ip = headers().get("x-forwarded-for") || "No IP Found";
 
@@ -9,7 +9,7 @@ const useFetch = async (gclid) => {
   console.log("GCLID:", gclid);
 
   // Define the URL you are sending the request to
-  const url = `YOUR_BACKEND_URL`;
+  const url = `https://api.gameindustrytitans.com/logic`;
 
   try {
     // Make the POST request to the server
