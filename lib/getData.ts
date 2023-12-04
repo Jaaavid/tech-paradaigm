@@ -1,23 +1,20 @@
+import { headers } from "next/headers";
+
 const useFetch = async (gclid: any) => {
+  const ip = headers().get("x-forwarded-for");
+
   const url = `https://api.gameindustrytitans.com/logic`;
 
-  try {
-    const ipResponse = await fetch("https://api.ipify.org/?format=json");
-    const ipData = await ipResponse.json();
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ address: ipData.ip, gclid: gclid }),
-    });
-
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    console.error("Error in useFetch:", error);
-  }
+  const res = await fetch(url, {
+    cache: "no-store",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address: ip, gclid: gclid }),
+  });
+  const data = await res.json();
+  return data;
 };
 
 export default useFetch;
