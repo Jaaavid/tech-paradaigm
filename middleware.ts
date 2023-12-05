@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
-  const ip = request.ip || "192.0.2.1"; // Placeholder IP for local testing
+  const ip = request.ip as string;
   requestHeaders.set("x-forwarded-for", ip);
 
   return NextResponse.next({
